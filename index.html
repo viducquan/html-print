@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Paged.js Editor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.11/beautify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.11/beautify-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.11/beautify-html.min.js"></script>
+  
+  <!-- Ace Editor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/ace.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/mode-html.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/mode-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/mode-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.2/theme-monokai.min.js"></script>
+  
+  <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="loading" id="loading">⏳ Đang xử lý...</div>
+
+  <div id="toolbar">
+    <div class="mode-selector">
+      <button class="mode-btn active" data-mode="edit">✏️ Edit</button>
+      <button class="mode-btn" data-mode="preview">👁️ Preview</button>
+    </div>
+    <div class="toolbar-divider"></div>
+    <button id="printBtn">🖨️ Print</button>
+    <button id="importBtn">📥 Import ZIP</button>
+    <button id="exportBtn">📤 Export ZIP</button>
+    <input type="file" id="fileInput" accept=".zip">
+    <input type="file" id="fontInput" accept=".ttf,.otf,.woff,.woff2" multiple>
+    <input type="file" id="imageInput" accept="image/*" multiple>
+    <span id="status"></span>
+  </div>
+
+  <div class="container">
+    <!-- EDIT MODE -->
+    <div class="mode-view active" id="editMode" data-mode="edit">
+      <div class="tabs">
+        <button class="tab active" data-tab="html"><b>Contents</b></button>
+        <button class="tab" data-tab="css">Styles</button>
+        <button class="tab" data-tab="js">Scripts</button>
+        <button class="tab" data-tab="fonts">📤 Fonts</button>
+        <button class="tab" data-tab="images">🖼️ Images</button>
+      </div>
+
+      <div class="tab-content active" id="html">
+        <div class="editor-container" id="htmlEditor"></div>
+      </div>
+
+      <div class="tab-content" id="css">
+        <div class="editor-container" id="cssEditor"></div>
+      </div>
+
+      <div class="tab-content" id="js">
+        <div class="editor-container" id="jsEditor"></div>
+      </div>
+
+      <div class="tab-content" id="fonts">
+        <div class="font-manager">
+          <div class="font-upload">
+            <h3>📤 Upload Font</h3>
+            <button class="font-upload-btn" onclick="document.getElementById('fontInput').click()">Import</button>
+            <small style="color: #aaa;">Support: TTF, OTF, WOFF, WOFF2</small>
+          </div>
+          
+          <div class="font-list">
+            <h3>📚 Font Lists</h3>
+            <div id="fontListContainer"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="images">
+        <div class="image-manager">
+          <div class="image-upload">
+            <h3>📤 Upload Images</h3>
+            <button class="image-upload-btn" onclick="document.getElementById('imageInput').click()">Import Images</button>
+            <small style="color: #aaa;">Support: JPG, PNG, GIF, WebP, SVG</small>
+          </div>
+          
+          <div class="image-list">
+            <h3>🖼️ Image Library</h3>
+            <div id="imageListContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW MODE -->
+    <div class="mode-view" id="previewMode" data-mode="preview">
+      <div class="preview-header">
+        <span>👁️ Preview</span>
+        <div class="zoom-controls">
+          <button class="zoom-btn" id="zoomOut">−</button>
+          <span class="zoom-level" id="zoomLevel">100%</span>
+          <button class="zoom-btn" id="zoomIn">+</button>
+          <button class="zoom-btn" id="zoomReset">⟲</button>
+        </div>
+      </div>
+      <div class="preview-container" tabindex="0">
+        <iframe id="framePreview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
